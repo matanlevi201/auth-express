@@ -5,3 +5,4 @@ export * from "./require-auth";
 export * from "./require-otp";
 export * from "./set-session";
 export * from "./social-guard";
+export * from "./blacklist-guard";

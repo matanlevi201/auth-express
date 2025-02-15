@@ -1,5 +1,5 @@
 import request from "supertest";
-import { IUserRepository, TYPES, UserPayload } from "../../../../src/types";
+import { IBlacklistRepository, IUserRepository, TYPES, UserPayload } from "../../../../src/types";
 import { container } from "../../../../inversify.config";
 import { Password, Tokens } from "../../../../src/utils";
 import { app } from "../../../../src/app";
@@ -8,6 +8,14 @@ import jwt from "jsonwebtoken";
 const BASE_URL = "/auth";
 
 describe(`GET ${BASE_URL}/sessions`, () => {
+  it("returns 403 when refresh token is blacklisted", async () => {
+    const blacklistedToken = "blacklisted_token";
+    const blacklistRepository = container.get<IBlacklistRepository>(TYPES.IBlacklistRepository);
+    await blacklistRepository.create({ token: blacklistedToken });
+    const invalidCookie = `refreshToken=${blacklistedToken}; Path=/; Expires=${new Date(0).toUTCString()}`;
+    const response = await request(app).get(`${BASE_URL}/sessions`).set("Cookie", invalidCookie).send().expect(403);
+  });
+
   it("returns 401 when failed to verified refresh token", async () => {
     const invalidCookie = `refreshToken=INVALID; Path=/; Expires=${new Date(0).toUTCString()}`;
     const response = await request(app).get(`${BASE_URL}/sessions`).set("Cookie", invalidCookie).send().expect(401);

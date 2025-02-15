@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError, NotAuthorizedError, NotFoundError } from "../errors";
 import { VerifyCallback, Profile } from "passport-google-oauth20";
-import { IUserRepository, TYPES, UserPayload } from "../types";
+import { IBlacklistRepository, IUserRepository, TYPES, UserPayload } from "../types";
 import { container } from "../../inversify.config";
 import { Password, Tokens } from "../utils";
 import jwt from "jsonwebtoken";
@@ -41,6 +41,9 @@ export const signin = async function (req: Request, res: Response, next: NextFun
 };
 
 export const signout = async function (req: Request, res: Response) {
+  const refreshToken = req.cookies?.refreshToken;
+  const blacklistRepository = container.get<IBlacklistRepository>(TYPES.IBlacklistRepository);
+  await blacklistRepository.create({ token: refreshToken });
   res.clearCookie("refreshToken");
   res.status(205).send();
 };

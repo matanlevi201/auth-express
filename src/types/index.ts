@@ -1,5 +1,5 @@
 import { MessageData, MessageDetails } from "@trycourier/courier/api";
-import { User, Email, InsertEmail, InsertUser } from "../database/schema";
+import { User, Email, Blacklist, InsertEmail, InsertUser, InsertBlacklist } from "../database/schema";
 import { Request, Response, NextFunction, Router } from "express";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../database/schema";
@@ -37,6 +37,7 @@ export interface IBaseRepository<T, K> {
 }
 export interface IUserRepository extends IBaseRepository<User, InsertUser> {}
 export interface IEmailRepository extends IBaseRepository<Email, InsertEmail> {}
+export interface IBlacklistRepository extends IBaseRepository<Blacklist, InsertBlacklist> {}
 
 export interface IEmailService {
   init: () => Promise<void>;
@@ -63,10 +64,6 @@ export const TYPES = {
   ITwoFactorController: Symbol("ITwoFactorController"),
   IUserRepository: Symbol("IUserRepository"),
   IEmailRepository: Symbol("IEmailRepository"),
+  IBlacklistRepository: Symbol("IBlacklistRepository"),
   IEmailService: Symbol("IEmailService"),
 };
-
-export interface ChangePasswordBody {
-  currentPassword: string;
-  newPassword: string;
-}

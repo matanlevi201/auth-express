@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { googleCallback, googleRedirect, refreshToken, signin, signout, signup } from "../controllers/auth.controllers";
-import { validateRequest, setSession } from "../middlewares";
+import { validateRequest, setSession, blacklistGuard } from "../middlewares";
 import { SigninSchema, SignupSchema } from "../validations";
 import Google from "passport-google-oauth20";
 import passport from "passport";
@@ -10,7 +10,7 @@ const router = Router();
 
 router.post("/users", validateRequest(SignupSchema), signup, setSession);
 router.post("/sessions", validateRequest(SigninSchema), signin, setSession);
-router.get("/sessions", refreshToken);
+router.get("/sessions", blacklistGuard, refreshToken);
 router.delete("/sessions", signout);
 
 router.get("/oauth/google", passport.authenticate("google", { scope: ["profile", "email"] }));

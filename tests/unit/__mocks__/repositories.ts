@@ -13,3 +13,11 @@ export const mockEmailRepository = {
   find: jest.fn(),
   findOne: jest.fn(),
 };
+
+export const mockBlacklistRepository = {
+  create: jest.fn(),
+  update: jest.fn(),
+  delete: jest.fn(),
+  find: jest.fn(),
+  findOne: jest.fn(),
+};

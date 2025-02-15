@@ -22,6 +22,11 @@ export const emailTable = pgTable("emails", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
+export const blacklistTable = pgTable("blacklist", {
+  id: serial("id").primaryKey(),
+  token: varchar("token", { length: 255 }),
+});
+
 export const userRelations = relations(userTable, ({ many }) => ({
   emails: many(emailTable),
 }));
@@ -38,6 +43,8 @@ export type InsertUser =
   | (typeof userTable.$inferInsert & { googleId: string; password?: never });
 
 export type InsertEmail = typeof emailTable.$inferInsert;
+export type InsertBlacklist = typeof blacklistTable.$inferInsert;
 
 export type User = typeof userTable.$inferSelect;
 export type Email = typeof emailTable.$inferSelect;
+export type Blacklist = typeof blacklistTable.$inferSelect;

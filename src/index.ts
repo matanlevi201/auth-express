@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { IDatabaseService, IEmailRepository, IEmailService, IUserRepository, TYPES } from "./types/index";
+import { IBlacklistRepository, IDatabaseService, IEmailRepository, IEmailService, IUserRepository, TYPES } from "./types/index";
 import { bootstrap, container } from "../inversify.config";
 import { logger } from "./utils";
 import { app } from "./app";
@@ -18,6 +18,7 @@ const mid = async () => {
   try {
     container.get<IUserRepository>(TYPES.IUserRepository);
     container.get<IEmailRepository>(TYPES.IEmailRepository);
+    container.get<IBlacklistRepository>(TYPES.IBlacklistRepository);
   } catch (error) {
     logger.error(error.message);
   }
